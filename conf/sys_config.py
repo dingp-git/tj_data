@@ -1,8 +1,8 @@
 # @Copyright(C), OldFive, 2020.
-# @Date : 2021/3/18 0018 9:48:47
+# @Date : 2021/3/11 10:13:26
 # @Author : OldFive
 # @Version : 0.1
-# @Description : 
+# @Description :
 # @History :
 # @Other:
 #  ▒█████   ██▓    ▓█████▄   █████▒██▓ ██▒   █▓▓█████
@@ -17,36 +17,39 @@
 #                   ░                      ░
 #
 """
-主入口
+系统配置
 """
 
-# Standard library imports
+# ********** 运行配置 ********** #
+# 基本运行配置
+app_run_conf = {
+    "HOST": "127.0.0.1",
+    "PORT": 5000,
+    "RELOAD": True,
+    "WORKERS": 1,
+    "DEBUG": True
+}
 
-# Third party imports
-from loguru import logger
-# Local application imports
-from conf.sys_config import *
-from utils import global_var
+SECRET_KEY = "xxx"
 
+# 日志相关配置
+LOG_CONF = {
+    'LOG_FORM_PATH': './log/runtime',  # 日志存储路径
+    'LOG_RETENTION': '7 days',         # 日志存储天数
+    'LOG_LEVEL': 'INFO',               # 日志等级
+    # 'LOG_LEVEL': 'ERROR',              # 日志等级
+}
 
-def init():
-    """初始化各种东西"""
-    # 日志初始化
-    if isFormalSystem:
-        logger.add(LOG_CONF['LOG_FORM_PATH'] + '_{time:YYYY-MM-DD}.log', rotation='00:00',
-                   retention=LOG_CONF['LOG_RETENTION'], level=LOG_CONF['LOG_LEVEL'], enqueue=True, encoding='utf8')
-    # 全局变量管理初始化
-    global_var.init()
+# ********** 生产 与 测试 系统切换 ********** #
+# True : 生产系统
+# False: 测试系统
+isFormalSystem = False
 
+# 接口前缀及版本控制
+__version = "v1.0"
+prefix_api_path = "/api/{version}".format(version=__version)
 
-def main():
-    """定时任务启动处"""
-    # 采集程序启动
-
-    # 存储程序启动
-
-    # 判断程序启动
-
-
-if __name__ == '__main__':
-    main()
+# api 文档描述
+API_DOC_TITLE = "tj项目api文档"
+API_DOC_DESC = ""
+API_DOC_VERSION = __version

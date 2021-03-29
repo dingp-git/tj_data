@@ -1,5 +1,5 @@
 # @Copyright(C), OldFive, 2020.
-# @Date : 2021/3/18 0018 9:48:47
+# @Date : 2021/3/24 0024 15:30:05
 # @Author : OldFive
 # @Version : 0.1
 # @Description : 
@@ -17,36 +17,29 @@
 #                   ░                      ░
 #
 """
-主入口
+历史数据实体类
 """
 
 # Standard library imports
 
 # Third party imports
-from loguru import logger
+
 # Local application imports
-from conf.sys_config import *
-from utils import global_var
 
 
-def init():
-    """初始化各种东西"""
-    # 日志初始化
-    if isFormalSystem:
-        logger.add(LOG_CONF['LOG_FORM_PATH'] + '_{time:YYYY-MM-DD}.log', rotation='00:00',
-                   retention=LOG_CONF['LOG_RETENTION'], level=LOG_CONF['LOG_LEVEL'], enqueue=True, encoding='utf8')
-    # 全局变量管理初始化
-    global_var.init()
+class HistoryData(object):
+    def __init__(self, table_name):
+        """存储历史数据"""
+        table_name = 0
 
+    def min(self):
+        """返回当前队列中最小值"""
 
-def main():
-    """定时任务启动处"""
-    # 采集程序启动
+    def max(self):
+        """返回当前队列中最大值"""
 
-    # 存储程序启动
+    def have(self, num):
+        """返回对应值是否存在于队列中"""
 
-    # 判断程序启动
-
-
-if __name__ == '__main__':
-    main()
+    def append(self, other):
+        """添加新数据到历史数据"""

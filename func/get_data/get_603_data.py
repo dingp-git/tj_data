@@ -21,10 +21,10 @@ def get_center_data():
     """
         获取中心CDR数据  查询当天，当前前一个小时至当前小时 只取最新一条数据
     """
-    # db = pymysql.connect(host='10.239.249.5', port=3306, user='chanct', password='chanct123', 
-    #                     database='zhiliangtongji', charset='utf8')
-    db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
-                        charset='utf8mb4')
+    db = pymysql.connect(host='10.239.249.5', port=3306, user='chanct', password='chanct123', 
+                        database='zhiliangtongji', charset='utf8')
+    # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
+    #                     charset='utf8mb4')
     cursor = db.cursor()
     sql1 = """SELECT
                     days,
@@ -124,10 +124,10 @@ def get_chanct_data():
     """
         获取长安CDR数据 查询当天，当前前10分钟至当前 只取最新一条组数据
     """
-    # db = pymysql.connect(host='10.238.72.19', port=3306, user='root', password='root', 
-    #                     database='signalling', charset='utf8')
-    db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
-                        charset='utf8mb4')
+    db = pymysql.connect(host='10.238.72.19', port=3306, user='root', password='root', 
+                        database='signalling', charset='utf8')
+    # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
+    #                     charset='utf8mb4')
     cursor = db.cursor()
     # 测试数据 d_time
     # TODO DEL
@@ -163,10 +163,10 @@ def get_match_data():
     """
         获取上下行数据 查询当天，当前前15分钟至当前 只取最新一条组数据
     """
-    # db = pymysql.connect(host='10.238.72.19', port=3306, user='root', password='root', 
-    #                     database='signalling', charset='utf8')
-    db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
-        charset='utf8mb4')
+    db = pymysql.connect(host='10.238.72.19', port=3306, user='root', password='root', 
+                        database='signalling', charset='utf8')
+    # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
+    #     charset='utf8mb4')
     cursor = db.cursor()
     # 测试数据 d_time
     # TODO DEL

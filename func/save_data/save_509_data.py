@@ -44,3 +44,34 @@ def save_hive_db_data(data):
         logger.error(e)
         send_to_axxnr.send_message('save_hive_db_data:{}'.format(e))
 
+def save_hive_db_increment(data):
+    """
+        保存hive db数据增量
+        @params:
+            data :   保存数据(必填参数)    list
+    """
+    return 'save_hive_db_increment success!'
+    db = MySqLHelper()
+    sql = """INSERT IGNORE INTO t_509_hive_db_increment (db_id, increment, d_time)
+                VALUES (%s,%s,%s)"""
+    try:
+        db.insertmany(sql, data)
+    except Exception as e:
+        logger.error(e)
+        send_to_axxnr.send_message('save_hive_db_increment:{}'.format(e))
+
+def save_loading_rate_increment(data):
+    """
+        保存加载率数据增量
+        @params:
+            data :   保存数据(必填参数)    list
+    """
+    return 'save_loading_rate_increment success!'
+    db = MySqLHelper()
+    sql = """INSERT IGNORE INTO t_509_loading_rate_increment (device, ip_port, d_time, increment)
+                VALUES (%s,%s,%s,%s)"""
+    try:
+        db.insertmany(sql, data)
+    except Exception as e:
+        logger.error(e)
+        send_to_axxnr.send_message('ave_loading_rate_increment:{}'.format(e))

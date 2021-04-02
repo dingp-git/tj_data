@@ -24,9 +24,12 @@
 
 # Third party imports
 from loguru import logger
+# from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 # Local application imports
 from conf.sys_config import *
 from utils import global_var
+# from utils.aps_config import scheduler
+from conf.aps_config import scheduler
 
 
 def init():
@@ -34,7 +37,7 @@ def init():
     # 日志初始化
     if isFormalSystem:
         logger.add(LOG_CONF['LOG_FORM_PATH'] + '_{time:YYYY-MM-DD}.log', rotation='00:00',
-                   retention=LOG_CONF['LOG_RETENTION'], level=LOG_CONF['LOG_LEVEL'], enqueue=True, encoding='utf8')
+                    retention=LOG_CONF['LOG_RETENTION'], level=LOG_CONF['LOG_LEVEL'], enqueue=True, encoding='utf8')
     # 全局变量管理初始化
     global_var.init()
 
@@ -42,7 +45,10 @@ def init():
 def main():
     """定时任务启动处"""
     # 采集程序启动
-
+    try:
+        scheduler.start()
+    except Exception as e:
+        logger.error(e)
     # 存储程序启动
 
     # 判断程序启动

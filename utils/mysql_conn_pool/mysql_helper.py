@@ -25,7 +25,7 @@
 # Third party imports
 
 # Local application imports
-from apps.utils.mysql_conn_pool.db_dbutils_init import get_my_connection
+from utils.mysql_conn_pool.db_dbutils_init import get_my_connection
 
 
 class MySqLHelper(object):

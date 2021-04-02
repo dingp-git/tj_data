@@ -25,8 +25,8 @@
 # Third party imports
 from dbutils.pooled_db import PooledDB
 # Local application imports
-from apps.config.db_config import MYSQL_CONF, MYSQL_CONF_T
-from apps.config.sys_config import isFormalSystem
+from conf.db_config import MYSQL_CONF, MYSQL_CONF_T
+from conf.sys_config import isFormalSystem
 
 
 class MyConnectionPool(object):

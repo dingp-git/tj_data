@@ -14,12 +14,13 @@ def save_loading_rate_data(data):
         @params:
             data :   保存数据(必填参数)    list
     """
-    return 'save_loading_rate_data success!'
+    # return 'save_loading_rate_data success!'
     db = MySqLHelper()
     sql = """INSERT IGNORE INTO t_509_loading_rate (device, ip_port, d_time, data)
                 VALUES (%s,%s,%s,%s)"""
     try:
-        db.insertmany(sql, data)
+        result = db.insertmany(sql, data)
+        logger.debug('save_loading_rate_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
         send_to_axxnr.send_message('save_loading_rate_data:{}'.format(e))
@@ -30,7 +31,7 @@ def save_hive_db_data(data):
         @params:
             data :   保存数据(必填参数)    list
     """
-    return 'save_hive_db_data success!'
+    # return 'save_hive_db_data success!'
     db = MySqLHelper()
     data_list = [list(i) for i in data]
     for j in data_list:
@@ -39,7 +40,8 @@ def save_hive_db_data(data):
     sql = """INSERT IGNORE INTO t_509_hive_db (db_id, data, d_time)
                 VALUES (%s,%s,%s)"""
     try:
-        db.insertmany(sql, data_tuple)
+        result = db.insertmany(sql, data_tuple)
+        logger.debug('save_hive_db_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
         send_to_axxnr.send_message('save_hive_db_data:{}'.format(e))
@@ -50,12 +52,13 @@ def save_hive_db_increment(data):
         @params:
             data :   保存数据(必填参数)    list
     """
-    return 'save_hive_db_increment success!'
+    # return 'save_hive_db_increment success!'
     db = MySqLHelper()
     sql = """INSERT IGNORE INTO t_509_hive_db_increment (db_id, increment, d_time)
                 VALUES (%s,%s,%s)"""
     try:
-        db.insertmany(sql, data)
+        result = db.insertmany(sql, data)
+        logger.debug('save_hive_db_increment:{}'.format(result))
     except Exception as e:
         logger.error(e)
         send_to_axxnr.send_message('save_hive_db_increment:{}'.format(e))
@@ -66,12 +69,13 @@ def save_loading_rate_increment(data):
         @params:
             data :   保存数据(必填参数)    list
     """
-    return 'save_loading_rate_increment success!'
+    # return 'save_loading_rate_increment success!'
     db = MySqLHelper()
     sql = """INSERT IGNORE INTO t_509_loading_rate_increment (device, ip_port, d_time, increment)
                 VALUES (%s,%s,%s,%s)"""
     try:
-        db.insertmany(sql, data)
+        result = db.insertmany(sql, data)
+        logger.debug('save_loading_rate_increment:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('ave_loading_rate_increment:{}'.format(e))
+        send_to_axxnr.send_message('save_loading_rate_increment:{}'.format(e))

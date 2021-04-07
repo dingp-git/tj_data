@@ -74,22 +74,11 @@ def get_center_data():
         sql2 += """AND hours = 0 ORDER BY days, hours DESC LIMIT 1"""
     cursor.execute(sql2)
     result2 = cursor.fetchall()
-    # logger.debug(sql2)
     logger.debug(len(result2))
     cursor.close()
     db.close()
-    # 测试数据 result1 result2 
-    # TODO DEL
-    # result1 =  (('20201115', '13', '100.00', '100.00', '100.00', '99.78', '99.48', '99.21', '100.00', '100.00', '96.34'), 
-    #     ('20201115', '14', '100.00', '100.00', '100.00', '99.78', '99.44', '99.17', '100.00', '100.00', '96.33'), 
-    #     ('20201115', '15', '100.00', '100.00', '100.00', '99.79', '99.48', '99.19', '100.00', '100.00', '96.31'))
-    # result2 = (('20201115', '14', '99.39', '97.14', '97.29', '99.34', '99.88', '99.88'), 
-    #     ('20201115', '19', '99.39', '97.12', '97.29', '99.34', '99.88', '99.88'))
     ret = date_conversion(result1,result2)
-    ret2 = save_603_data.save_center_data(ret)
-    # print(3333,ret)
-    logger.debug(ret2)
-    send_to_axxnr.send_message('get_center_data : {}'.format(ret2))
+    save_603_data.save_center_data(ret)
 
 def date_conversion(data_sanma, data_erma):
     """
@@ -129,9 +118,6 @@ def get_chanct_data():
     # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
     #                     charset='utf8mb4')
     cursor = db.cursor()
-    # 测试数据 d_time
-    # TODO DEL
-    # d_time = '20201101'
     sql = """SELECT
                 cdr_type,
                 net_type,
@@ -150,14 +136,10 @@ def get_chanct_data():
                 stat_time BETWEEN DATE_SUB(now(),INTERVAL 10 MINUTE) AND NOW()""".format(d_time)
     cursor.execute(sql)
     result = cursor.fetchall()
-    # logger.debug(sql)
-    logger.debug(len(result))
     cursor.close()
     db.close()
     result = list(result)
-    ret = save_603_data.save_chanct_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_chanct_data : {}'.format(ret))
+    save_603_data.save_chanct_data(result)
 
 def get_match_data():
     """
@@ -168,9 +150,6 @@ def get_match_data():
     # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
     #     charset='utf8mb4')
     cursor = db.cursor()
-    # 测试数据 d_time
-    # TODO DEL
-    # d_time = '20201110'
     sql = """SELECT
                 isp,
                 protocol,
@@ -194,17 +173,15 @@ def get_match_data():
     cursor.close()
     db.close()
     result = list(result)
-    ret = save_603_data.save_match_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_match_data : {}'.format(ret))
+    save_603_data.save_match_data(result)
 
 
 # 短彩信数据
-def get_dx_sjjs_data(hostname):
+def get_dx_sjjs_data(host_name):
     """
         获取短信接收数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
         @return:
             [
                 ('10.238.33.129', '2021-03-01 14:44:00', '10.68.179.92', '41'),
@@ -213,16 +190,16 @@ def get_dx_sjjs_data(hostname):
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='smmc2', password='tigg603')
+    client.connect(hostname=host_name, port=22, username='smmc2', password='tigg603')
     temp_list = []
     cmd = "cat /home/smmc2/smmc2/exe/proxy/log/cur/*nm* | grep SMSC_1M | tail -n 10 | awk -F'[][]' '{print $1,$4,$10}'|awk -F'[<: ]' '{print datenow,$2\":\"$3\":\"$4,$8,$9}' datenow=`date +%Y-%m-%d`"
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
-    with open(hostname, 'w') as f1:
+    with open(host_name, 'w') as f1:
         f1.write(result)
-    with open(hostname, 'r') as f2:
+    with open(host_name, 'r') as f2:
         for line in f2:
-            line = hostname + ' ' + line.strip()
+            line = host_name + ' ' + line.strip()
             data = line.split()
             data = (data[0], data[1] + ' ' + data[2], data[3], data[4])
             temp_list.append(data)
@@ -237,15 +214,14 @@ def get_sms_sjjs_data():
                 '10.238.48.129', '10.238.48.130']
     for host in hostlist:
         result = get_dx_sjjs_data(host)
-        ret = save_603_data.save_sms_sjjs_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_sms_sjjs_data : {}'.format(ret))
+        save_603_data.save_sms_sjjs_data(result)
 
-def get_dx_load_data(hostname):
+
+def get_dx_load_data(host_name):
     """
         获取短信加载数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
         @return:
             [
                 ('10.238.76.11', '2021-03-01 14:47:00', '10.238.69.14', '8000'),
@@ -254,16 +230,16 @@ def get_dx_load_data(hostname):
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='smmc2', password='tigg603')
+    client.connect(hostname=host_name, port=22, username='smmc2', password='tigg603')
     temp_list = []
     cmd = "cat /home/smmc2/smmc2/exe/load/log/cur/*nm* |grep UPLOAD_1M | tail -n 10 | grep -v 10.238.69.25 | grep -v 10.238.69.26 | awk -F'[][]' '{print $1,$4,$6}' |awk -F'<' '{print $2}'|awk -F':' '{print $1\":\"$2\":\"$3,$5,$6}' |awk '{print datenow,$1,$2,$4}' datenow=\"`date +%Y-%m-%d`\""
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
-    with open(hostname, 'w') as f1:
+    with open(host_name, 'w') as f1:
         f1.write(result)
-    with open(hostname, 'r') as f2:
+    with open(host_name, 'r') as f2:
         for line in f2:
-            line = hostname + ' ' + line.strip()
+            line = host_name + ' ' + line.strip()
             data = line.split(" ")
             temp_list.append(tuple(data))
     client.close()
@@ -280,15 +256,14 @@ def get_sms_load_data():
     hostlist = ['10.238.76.11', '10.238.76.12']
     for host in hostlist:
         result = get_dx_load_data(host)
-        ret = save_603_data.save_sms_load_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_sms_load_data : {}'.format(ret))
+        save_603_data.save_sms_load_data(result)
 
-def get_cx_yd_sjjs_data(hostname):
+
+def get_cx_yd_sjjs_data(host_name):
     """
         获取彩信 移动接收数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
         @return:
             [
                 ('10.238.16.1', '2021-03-01 14:43:00', '10.10.5.7', '118'),
@@ -297,16 +272,16 @@ def get_cx_yd_sjjs_data(hostname):
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='mmmc', password='mmmc')
+    client.connect(hostname=host_name, port=22, username='mmmc', password='mmmc')
     temp_list = []
     cmd = "cat /home/mmmc/cx_sjjs/log/cx_sjjs.log |grep MMS:|grep 10.10.5.7 |tail -n 5|awk '{print $1,$2,$6}'|awk -F'[][]' '{print $1,$4}'| awk -F'#report:' '{print $1,\"10.10.5.7\",$2}';cat /home/mmmc/cx_sjjs/log/cx_sjjs.log |grep MMS:|grep 10.10.5.8 |tail -n 5|awk '{print $1,$2,$6}'|awk -F'[][]' '{print $1,$4}'| awk -F'#report:' '{print $1,\"10.10.5.8\",$2}'"
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
-    with open(hostname, 'w') as f1:
+    with open(host_name, 'w') as f1:
         f1.write(result)
-    with open(hostname, 'r') as f2:
+    with open(host_name, 'r') as f2:
         for line in f2:
-            line = hostname + ' ' + line.strip()
+            line = host_name + ' ' + line.strip()
             data = line.split(" ")
             data = [i for i in data if i != '']
             temp_list.append(tuple(data))
@@ -317,11 +292,11 @@ def get_cx_yd_sjjs_data(hostname):
         ret_list.append(data)
     return ret_list
 
-def get_cx_lt_sjjs_data(hostname):
+def get_cx_lt_sjjs_data(host_name):
     """
         获取彩信 联通接收数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
         @return:
             [
                 ('10.238.16.1', '2021-03-01 14:43:00', '10.10.5.7', '118'),
@@ -330,16 +305,16 @@ def get_cx_lt_sjjs_data(hostname):
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='mmmc', password='mmmc')
+    client.connect(hostname=host_name, port=22, username='mmmc', password='mmmc')
     temp_list = []
     cmd = "cat /home/mmmc/cx_sjjs/log/cx_sjjs.log |grep MMS:|grep 10.10.4.219 |tail -n 5|awk '{print $1,$2,$6}'|awk -F'[][]' '{print $1,$4}'| awk -F'#report:' '{print $1,\"10.10.4.219\",$2}'"
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
-    with open(hostname, 'w') as f1:
+    with open(host_name, 'w') as f1:
         f1.write(result)
-    with open(hostname, 'r') as f2:
+    with open(host_name, 'r') as f2:
         for line in f2:
-            line = hostname + ' ' + line.strip()
+            line = host_name + ' ' + line.strip()
             data = line.split(" ")
             data = [i for i in data if i != '']
             temp_list.append(tuple(data))
@@ -350,11 +325,11 @@ def get_cx_lt_sjjs_data(hostname):
         ret_list.append(data)
     return ret_list
 
-def get_cx_dx_sjjs_data(hostname):
+def get_cx_dx_sjjs_data(host_name):
     """
         获取彩信 电信接收数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
         @return:
             [
                 ('10.238.16.1', '2021-03-01 14:43:00', '10.10.5.7', '118'),
@@ -363,16 +338,16 @@ def get_cx_dx_sjjs_data(hostname):
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='mmmc', password='mmmc')
+    client.connect(hostname=host_name, port=22, username='mmmc', password='mmmc')
     temp_list = []
     cmd = "cat /home/mmmc/cx_sjjs/log/cx_sjjs.log |grep MMS:|grep 192.168.10.190 |tail -n 5|awk '{print $1,$2,$6}'|awk -F'[][]' '{print $1,$4}'| awk -F'#report:' '{print $1,\"192.168.10.190\",$2}'"
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
-    with open(hostname, 'w') as f1:
+    with open(host_name, 'w') as f1:
         f1.write(result)
-    with open(hostname, 'r') as f2:
+    with open(host_name, 'r') as f2:
         for line in f2:
-            line = hostname + ' ' + line.strip()
+            line = host_name + ' ' + line.strip()
             data = line.split(" ")
             data = [i for i in data if i != '']
             temp_list.append(tuple(data))
@@ -390,9 +365,8 @@ def get_mms_yd_sjjs_data():
     hostlist = ['10.238.16.1', '10.238.16.2']
     for host in hostlist:
         result = get_cx_yd_sjjs_data(host)
-        ret = save_603_data.save_mms_sjjs_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_mms_yd_sjjs_data : {}'.format(ret))
+        save_603_data.save_mms_sjjs_data(result)
+
 
 def get_mms_lt_sjjs_data():
     """
@@ -401,9 +375,8 @@ def get_mms_lt_sjjs_data():
     hostlist = ['10.238.21.1', '10.238.21.2']
     for host in hostlist:
         result = get_cx_lt_sjjs_data(host)
-        ret = save_603_data.save_mms_sjjs_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_mms_lt_sjjs_data : {}'.format(ret))
+        save_603_data.save_mms_sjjs_data(result)
+
 
 def get_mms_dx_sjjs_data():
     """
@@ -412,9 +385,8 @@ def get_mms_dx_sjjs_data():
     hostlist = ['10.238.26.1', ]
     for host in hostlist:
         result = get_cx_dx_sjjs_data(host)
-        ret = save_603_data.save_mms_sjjs_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_mms_dx_sjjs_data : {}'.format(ret))
+        save_603_data.save_mms_sjjs_data(result)
+
 
 def get_mms_sjjs_data():
     """
@@ -424,11 +396,11 @@ def get_mms_sjjs_data():
     get_mms_lt_sjjs_data()
     get_mms_dx_sjjs_data()
 
-def get_cx_load_data(hostname):
+def get_cx_load_data(host_name):
     """
         获取彩信加载数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
         @return:
             [
                 ('10.238.77.5', '2021-03-01 14:42:00', '623'),
@@ -437,16 +409,16 @@ def get_cx_load_data(hostname):
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='mmmc', password='mmmc')
+    client.connect(hostname=host_name, port=22, username='mmmc', password='mmmc')
     temp_list = []
     cmd = "cat /mmmc/cx_sjjz_szx/log/cx_sjjz_szx.log | grep Trafic-Min | grep AvroCxMin |tail -n 6|awk -F'[][]' '{print $1,$6}'|awk '{print $1,$2,$5}'"
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
-    with open(hostname, 'w') as f1:
+    with open(host_name, 'w') as f1:
         f1.write(result)
-    with open(hostname, 'r') as f2:
+    with open(host_name, 'r') as f2:
         for line in f2:
-            line = hostname + ' ' + line.strip()
+            line = host_name + ' ' + line.strip()
             data = line.split(" ")
             data = [i for i in data if i != '']
             temp_list.append(tuple(data))
@@ -464,9 +436,8 @@ def get_mms_load_data():
     hostlist = ['10.238.77.5', '10.238.77.6']
     for host in hostlist:
         result = get_cx_load_data(host)
-        ret = save_603_data.save_mms_load_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_mms_load_data : {}'.format(ret))
+        save_603_data.save_mms_load_data(result)
+
 
 
 # 关联率数据
@@ -484,26 +455,6 @@ class ZabbixApi():
         request.close()
         return response['result']
 
-
-# TODO DEL
-def get_http(value):
-    """
-        get_http主要实现了向zabbixapi发送请求获取数据的功能,根据传入的value参数,获取不同的结果
-    """
-    data = urllib.parse.urlencode(value).encode('utf8')
-    req = urllib.request.Request(api_url, data)
-    for key in header:
-        req.add_header(key, header[key])
-    try:
-        result = urllib.request.urlopen(req)
-    except urllib.error.HTTPError as e1:
-        logger.error(e1.code)
-    except urllib.error.URLError as e2:
-        logger.error(e2.reason)
-    else:
-        response = json.loads(result.read().decode('utf8'))
-        result.close()
-        return response['result']
 
 def get_hosts():
     # TODO 补充return返回数据
@@ -582,9 +533,8 @@ def get_relate_rate_data():
             clock = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
             temp_item = (str(clock), str(item[1]), float(i['value']))
             result.append(temp_item)
-    ret = save_603_data.save_relate_rate_data(result)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_relate_rate_data : {}'.format(ret))
+    save_603_data.save_relate_rate_data(result)
+
 
 
 

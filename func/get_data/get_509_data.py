@@ -1,6 +1,8 @@
 # Standard library imports
-import datetime, time
+import datetime
+import time
 import json
+import copy
 # Third party imports
 from loguru import logger
 import pymysql
@@ -16,11 +18,11 @@ def get_loading_rate_data(host_name):
     """
         获取加载率数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='root', password='chanct2018')
+    client.connect(hostname=host_name, port=22, username='root', password='chanct2018')
     cmd = "find /opt/recv/nfs/ -name 'loading_rate_*' | grep -v wrong|sort|awk 'END{print}'|xargs cat"
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
@@ -32,19 +34,17 @@ def get_loading_rate_data(host_name):
                 result[0]['values'][0][1]))
     ret_list.append((result[1]['metric']['device'], result[1]['metric']['instance'], temp_time2,
                 result[1]['values'][0][1]))
-    ret = save_509_data.save_loading_rate_data(ret_list)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_loading_rate_data : {}'.format(ret))
+    save_509_data.save_loading_rate_data(ret_list)
 
 def del_loading_rate_data(host_name):
     """
         删除加载率数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='root', password='chanct2018')
+    client.connect(hostname=host_name, port=22, username='root', password='chanct2018')
     cmd = "find /opt/recv/nfs/ -name 'loading_rate_*' | xargs rm -rf"
     stdin, stdout, stderr = client.exec_command(cmd)
 
@@ -52,11 +52,11 @@ def get_hive_db_data(host_name):
     """
         获取hive db数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='root', password='chanct2018')
+    client.connect(hostname=host_name, port=22, username='root', password='chanct2018')
     cmd = "find /opt/recv/nfs/ -name '509hive_db_*' | grep -v wrong|sort|awk 'END{print}'|xargs cat"
     stdin, stdout, stderr = client.exec_command(cmd)
     result = stdout.read().decode('utf-8')
@@ -64,19 +64,17 @@ def get_hive_db_data(host_name):
     data1 = [tuple(i) for i in result["table_storage"]]
     data2 = [tuple(i) for i in result["db_storage"]]
     ret_list = data1.extend(data2)
-    ret = save_509_data.get_hive_db_data(ret_list)
-    logger.debug(ret)
-    send_to_axxnr.send_message('get_hive_db_data : {}'.format(ret))
+    save_509_data.save_hive_db_data(ret_list)
 
 def del_hive_db_data(host_name):
     """
         删除hive_db数据
         @params:
-            hostname :   主机名称(必填参数)    str
+            host_name :   主机名称(必填参数)    str
     """
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(hostname=hostname, port=22, username='root', password='chanct2018')
+    client.connect(hostname=host_name, port=22, username='root', password='chanct2018')
     cmd = "find /opt/recv/nfs/ -name '509hive_db_*' | xargs rm -rf"
     stdin, stdout, stderr = client.exec_command(cmd)
 
@@ -119,13 +117,12 @@ def get_hive_db_increment():
                 temp.append(detla)
                 temp.append(item[2])
                 new_list.remove(item2)
-        increment.append(temp)
+                increment.append(temp)
     result = [tuple(i) for i in increment]
     cursor.close()
     db.close()
-    ret = save_509_data.save_hive_db_increment(result)
-    logger.debug(len(result))
-    send_to_axxnr.send_message('get_hive_db_increment : {}'.format(ret))
+    save_509_data.save_hive_db_increment(result)
+
 
 def get_loading_rate_increment():
     """获取记载率数据增量"""
@@ -149,7 +146,7 @@ def get_loading_rate_increment():
             d_time > '{}' 
             AND d_time <= '{}' 
         ORDER BY
-            d_time DESC;""".format(MIN_DATE_TIME,NOW_DATE_TIME)
+            d_time DESC;""".format(MIN_DATE_TIME, NOW_DATE_TIME)
     cursor.execute(sql)
     rows = cursor.fetchall()
     data_list = [list(row) for row in rows]
@@ -164,6 +161,5 @@ def get_loading_rate_increment():
     result = [tuple(k) for k in increment]
     cursor.close()
     db.close()
-    ret = save_509_data.save_loading_rate_increment(result)
-    logger.debug(len(result))
-    send_to_axxnr.send_message('get_loading_rate_increment : {}'.format(ret))
+    save_509_data.save_loading_rate_increment(result)
+

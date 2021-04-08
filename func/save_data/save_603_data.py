@@ -11,7 +11,7 @@ def save_center_data(data):
     """
         保存中心CDR数据
         @params:
-            data :   保存数据(必填参数)    list
+            data :   保存数据(必填参数)    list  [(),(),...]
     """
     # return 'save center data success!'
     db = MySqLHelper()
@@ -28,7 +28,7 @@ def save_center_data(data):
         logger.debug('save_center_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_center_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_center_data:{}'.format(e))
 
 
 def save_chanct_data(data):
@@ -47,7 +47,7 @@ def save_chanct_data(data):
         logger.debug('save_chanct_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_chanct_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_chanct_data:{}'.format(e))
 
 def save_match_data(data):
     """
@@ -65,7 +65,7 @@ def save_match_data(data):
         logger.debug('save_match_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_match_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_match_data:{}'.format(e))
 
 def save_sms_sjjs_data(data):
     """
@@ -82,7 +82,7 @@ def save_sms_sjjs_data(data):
         logger.debug('save_sms_sjjs_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_sms_sjjs_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_sms_sjjs_data:{}'.format(e))
 
 def save_sms_load_data(data):
     """
@@ -99,7 +99,7 @@ def save_sms_load_data(data):
         logger.debug('save_sms_load_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_sms_load_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_sms_load_data:{}'.format(e))
 
 def save_mms_sjjs_data(data):
     """
@@ -116,7 +116,7 @@ def save_mms_sjjs_data(data):
         logger.debug('save_mms_sjjs_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_mms_sjjs_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_mms_sjjs_data:{}'.format(e))
 
 def save_mms_load_data(data):
     """
@@ -133,7 +133,7 @@ def save_mms_load_data(data):
         logger.debug('save_mms_load_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_mms_load_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_mms_load_data:{}'.format(e))
 
 def save_relate_rate_data(data):
     """
@@ -150,7 +150,11 @@ def save_relate_rate_data(data):
         logger.debug('save_relate_rate_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_relate_rate_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_relate_rate_data:{}'.format(e))
+
+
+
+
 
 
 

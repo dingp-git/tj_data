@@ -24,7 +24,6 @@
 
 # Third party imports
 from loguru import logger
-# from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 # Local application imports
 from conf.sys_config import *
 from utils import global_var

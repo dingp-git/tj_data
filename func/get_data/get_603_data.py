@@ -1,5 +1,6 @@
 # Standard library imports
-import datetime, time
+import datetime
+import time
 import json
 import urllib
 # Third party imports
@@ -78,7 +79,9 @@ def get_center_data():
     cursor.close()
     db.close()
     ret = date_conversion(result1,result2)
-    save_603_data.save_center_data(ret)
+    if ret:
+        save_603_data.save_center_data(ret)
+
 
 def date_conversion(data_sanma, data_erma):
     """
@@ -113,6 +116,7 @@ def get_chanct_data():
     """
         获取长安CDR数据 查询当天，当前前10分钟至当前 只取最新一条组数据
     """
+    d_time = time.strftime("%Y%m%d")
     db = pymysql.connect(host='10.238.72.19', port=3306, user='root', password='root', 
                         database='signalling', charset='utf8')
     # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
@@ -145,6 +149,7 @@ def get_match_data():
     """
         获取上下行数据 查询当天，当前前15分钟至当前 只取最新一条组数据
     """
+    d_time = time.strftime("%Y%m%d")
     db = pymysql.connect(host='10.238.72.19', port=3306, user='root', password='root', 
                         database='signalling', charset='utf8')
     # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
@@ -160,7 +165,7 @@ def get_match_data():
                 sum( match_count )/ sum( req_count ),
                 sum( match_count )/ sum( rsp_count ) 
             FROM
-                msg_stat_20201110 
+                msg_stat_{}
             WHERE 
                 stat_time BETWEEN DATE_SUB(now(),INTERVAL 15 MINUTE) AND NOW()
             GROUP BY

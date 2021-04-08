@@ -23,7 +23,7 @@ def save_loading_rate_data(data):
         logger.debug('save_loading_rate_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_loading_rate_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_loading_rate_data:{}'.format(e))
 
 def save_hive_db_data(data):
     """
@@ -44,7 +44,7 @@ def save_hive_db_data(data):
         logger.debug('save_hive_db_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_hive_db_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_hive_db_data:{}'.format(e))
 
 def save_hive_db_increment(data):
     """
@@ -61,7 +61,7 @@ def save_hive_db_increment(data):
         logger.debug('save_hive_db_increment:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_hive_db_increment:{}'.format(e))
+        # send_to_axxnr.send_message('save_hive_db_increment:{}'.format(e))
 
 def save_loading_rate_increment(data):
     """
@@ -78,4 +78,4 @@ def save_loading_rate_increment(data):
         logger.debug('save_loading_rate_increment:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        send_to_axxnr.send_message('save_loading_rate_increment:{}'.format(e))
+        # send_to_axxnr.send_message('save_loading_rate_increment:{}'.format(e))

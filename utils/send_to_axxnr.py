@@ -16,3 +16,4 @@ def send_message(message):
     r = requests.post('http://10.52.140.158:8080/axxnr/message',data = json.dumps(data))
     if 'send ok' in r.text :
         pass
+    r.close()

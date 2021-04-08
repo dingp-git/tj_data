@@ -136,7 +136,7 @@ class MySqLHelper(object):
     def insertmany(self, sql, param):
         """
         :param sql:
-        :param param: 必须是元组或列表[(),()]或（（），（））
+        :param param: 必须是元组或列表[(),()]或((),())
         :return:
         """
         cursor, conn, count = self.db.getconn()

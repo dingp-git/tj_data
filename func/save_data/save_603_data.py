@@ -127,7 +127,7 @@ def save_mms_load_data(data):
     # return 'save_mms_load_data success!'
     db = MySqLHelper()
     sql = """INSERT IGNORE INTO t_603_mms_load (ip_addr, d_time, load_1m)
-                VALUES (%s,%s,%s,%s)"""
+                VALUES (%s,%s,%s)"""
     try:
         result = db.insertmany(sql, data)
         logger.debug('save_mms_load_data:{}'.format(result))

@@ -36,6 +36,7 @@ def get_loading_rate_data(host_name):
         ret_list.append((result[1]['metric']['device'], result[1]['metric']['instance'], temp_time2,
                     result[1]['values'][0][1]))
         logger.debug(ret_list[0])
+        logger.debug(len(ret_list))
         save_509_data.save_loading_rate_data(ret_list)
 
 def del_loading_rate_data(host_name):
@@ -67,6 +68,7 @@ def get_hive_db_data(host_name):
         data1 = [tuple(i) for i in result["table_storage"]]
         data2 = [tuple(i) for i in result["db_storage"]]
         ret_list = data1.extend(data2)
+        logger.debug(len(ret_list))
         save_509_data.save_hive_db_data(ret_list)
 
 def del_hive_db_data(host_name):
@@ -124,7 +126,9 @@ def get_hive_db_increment():
     result = [tuple(i) for i in increment]
     cursor.close()
     db.close()
-    save_509_data.save_hive_db_increment(result)
+    logger.debug(len(result))
+    if result:
+        save_509_data.save_hive_db_increment(result)
 
 
 def get_loading_rate_increment():
@@ -164,5 +168,7 @@ def get_loading_rate_increment():
     result = [tuple(k) for k in increment]
     cursor.close()
     db.close()
-    save_509_data.save_loading_rate_increment(result)
+    logger.debug(len(result))
+    if result:
+        save_509_data.save_loading_rate_increment(result)
 

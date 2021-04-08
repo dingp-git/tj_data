@@ -46,7 +46,7 @@ def get_center_data():
                     days = DAY (NOW())
                     AND hours != '24_zl' """
     if datetime.datetime.now().hour != 0:
-        sql1 += """AND hours BETWEEN HOUR(DATE_SUB(NOW(),INTERVAL 60 MINUTE)) AND HOUR(NOW()) 
+        sql1 += """AND hours BETWEEN HOUR(DATE_SUB(NOW(), INTERVAL 120 MINUTE)) AND HOUR(NOW()) 
                     ORDER BY days , hours DESC LIMIT 1"""
     else:
         sql1 += """AND hours = 0 ORDER BY days, hours DESC LIMIT 1"""
@@ -69,7 +69,7 @@ def get_center_data():
                 days = DAY (NOW()) 
                 AND hours != '24_zl' """
     if datetime.datetime.now().hour != 0:
-        sql2 += """AND hours BETWEEN HOUR(DATE_SUB(NOW(),INTERVAL 60 MINUTE)) AND HOUR(NOW())
+        sql2 += """AND hours BETWEEN HOUR(DATE_SUB(NOW(), INTERVAL 120 MINUTE)) AND HOUR(NOW())
                     ORDER BY days, hours DESC LIMIT 1"""
     else:
         sql2 += """AND hours = 0 ORDER BY days, hours DESC LIMIT 1"""
@@ -79,6 +79,7 @@ def get_center_data():
     cursor.close()
     db.close()
     ret = date_conversion(result1,result2)
+    logger.debug(len(ret))
     if ret:
         save_603_data.save_center_data(ret)
 
@@ -137,13 +138,15 @@ def get_chanct_data():
             FROM
                 cdr_qua_stat_{}
             WHERE
-                stat_time BETWEEN DATE_SUB(now(),INTERVAL 10 MINUTE) AND NOW()""".format(d_time)
+                stat_time BETWEEN DATE_SUB(now(), INTERVAL 20 MINUTE) AND NOW()""".format(d_time)
     cursor.execute(sql)
     result = cursor.fetchall()
     cursor.close()
     db.close()
     result = list(result)
-    save_603_data.save_chanct_data(result)
+    logger.debug(len(result))
+    if result:
+        save_603_data.save_chanct_data(result)
 
 def get_match_data():
     """
@@ -167,18 +170,19 @@ def get_match_data():
             FROM
                 msg_stat_{}
             WHERE 
-                stat_time BETWEEN DATE_SUB(now(),INTERVAL 15 MINUTE) AND NOW()
+                stat_time BETWEEN DATE_SUB(now(), INTERVAL 30 MINUTE) AND NOW()
             GROUP BY
                 isp,
                 protocol,
                 stat_time""".format(d_time)
     cursor.execute(sql)
     result = cursor.fetchall()
-    logger.debug(len(result))
     cursor.close()
     db.close()
     result = list(result)
-    save_603_data.save_match_data(result)
+    logger.debug(len(result))
+    if result:
+        save_603_data.save_match_data(result)
 
 
 # 短彩信数据
@@ -219,7 +223,9 @@ def get_sms_sjjs_data():
                 '10.238.48.129', '10.238.48.130']
     for host in hostlist:
         result = get_dx_sjjs_data(host)
-        save_603_data.save_sms_sjjs_data(result)
+        logger.debug(len(result))
+        if result:
+            save_603_data.save_sms_sjjs_data(result)
 
 
 def get_dx_load_data(host_name):
@@ -261,7 +267,9 @@ def get_sms_load_data():
     hostlist = ['10.238.76.11', '10.238.76.12']
     for host in hostlist:
         result = get_dx_load_data(host)
-        save_603_data.save_sms_load_data(result)
+        logger.debug(len(result))
+        if result:
+            save_603_data.save_sms_load_data(result)
 
 
 def get_cx_yd_sjjs_data(host_name):
@@ -370,7 +378,9 @@ def get_mms_yd_sjjs_data():
     hostlist = ['10.238.16.1', '10.238.16.2']
     for host in hostlist:
         result = get_cx_yd_sjjs_data(host)
-        save_603_data.save_mms_sjjs_data(result)
+        logger.debug(len(result))
+        if result:
+            save_603_data.save_mms_sjjs_data(result)
 
 
 def get_mms_lt_sjjs_data():
@@ -380,7 +390,9 @@ def get_mms_lt_sjjs_data():
     hostlist = ['10.238.21.1', '10.238.21.2']
     for host in hostlist:
         result = get_cx_lt_sjjs_data(host)
-        save_603_data.save_mms_sjjs_data(result)
+        logger.debug(len(result))
+        if result:
+            save_603_data.save_mms_sjjs_data(result)
 
 
 def get_mms_dx_sjjs_data():
@@ -390,7 +402,9 @@ def get_mms_dx_sjjs_data():
     hostlist = ['10.238.26.1', ]
     for host in hostlist:
         result = get_cx_dx_sjjs_data(host)
-        save_603_data.save_mms_sjjs_data(result)
+        logger.debug(len(result))
+        if result:
+            save_603_data.save_mms_sjjs_data(result)
 
 
 def get_mms_sjjs_data():
@@ -441,7 +455,9 @@ def get_mms_load_data():
     hostlist = ['10.238.77.5', '10.238.77.6']
     for host in hostlist:
         result = get_cx_load_data(host)
-        save_603_data.save_mms_load_data(result)
+        logger.debug(len(result))
+        if result:
+            save_603_data.save_mms_load_data(result)
 
 
 
@@ -538,7 +554,9 @@ def get_relate_rate_data():
             clock = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
             temp_item = (str(clock), str(item[1]), float(i['value']))
             result.append(temp_item)
-    save_603_data.save_relate_rate_data(result)
+    logger.debug(len(result))
+    if result:
+        save_603_data.save_relate_rate_data(result)
 
 
 

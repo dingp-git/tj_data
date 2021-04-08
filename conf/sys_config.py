@@ -36,7 +36,7 @@ SECRET_KEY = "xxx"
 LOG_CONF = {
     'LOG_FORM_PATH': './log/runtime',  # 日志存储路径
     'LOG_RETENTION': '7 days',         # 日志存储天数
-    'LOG_LEVEL': 'INFO',               # 日志等级
+    'LOG_LEVEL': 'DUBUG',               # 日志等级
     # 'LOG_LEVEL': 'ERROR',              # 日志等级
 }
 

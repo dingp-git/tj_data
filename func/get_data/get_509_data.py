@@ -70,7 +70,7 @@ def get_hive_db_data(host_name):
         result = json.loads(result)
         data1 = [tuple(i) for i in result["table_storage"]]
         data2 = [tuple(i) for i in result["db_storage"]]
-        ret_list = data1.extend(data2)
+        ret_list = data1 + data2
         logger.debug(len(ret_list))
         save_509_data.save_hive_db_data(ret_list)
 

@@ -89,7 +89,7 @@ def save_row_flow(data):
     """
     # return 'save_loading_rate_increment success!'
     db = MySqLHelper()
-    sql = """INSERT IGNORE INTO t_509_row_flow(`ip_addr`, `obps`, `ibps`, `operators`, `dev_port_desc`, `dev_port`, `d_time`) VALUES(%s, %s, %s, %s, %s, %s, %s)"""
+    sql = """INSERT IGNORE INTO t_509_row_flow(`ip_addr`, `obps`, `ibps`, `isp`, `dev_port_desc`, `dev_port`, `d_time`) VALUES(%s, %s, %s, %s, %s, %s, %s)"""
     try:
         result = db.insertmany(sql, data)
         logger.debug('save_loading_rate_increment:{}'.format(result))

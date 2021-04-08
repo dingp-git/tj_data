@@ -43,7 +43,7 @@ def get_center_data():
                     tj_sanma_fenjia 
                 WHERE
                     
-                    days = DAY (NOW())
+                    days = date_format(now(),'%Y%m%d')
                     AND hours != '24_zl' """
     if datetime.datetime.now().hour != 0:
         sql1 += """AND hours BETWEEN HOUR(DATE_SUB(NOW(), INTERVAL 120 MINUTE)) AND HOUR(NOW()) 
@@ -66,7 +66,7 @@ def get_center_data():
             FROM
                 tj_erma 
             WHERE
-                days = DAY (NOW()) 
+                days = date_format(now(),'%Y%m%d') 
                 AND hours != '24_zl' """
     if datetime.datetime.now().hour != 0:
         sql2 += """AND hours BETWEEN HOUR(DATE_SUB(NOW(), INTERVAL 120 MINUTE)) AND HOUR(NOW())

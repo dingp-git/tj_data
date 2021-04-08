@@ -72,6 +72,7 @@ def get_hive_db_data(host_name):
         data2 = [tuple(i) for i in result["db_storage"]]
         ret_list = data1 + data2
         logger.debug(len(ret_list))
+        logger.debug(ret_list)
         save_509_data.save_hive_db_data(ret_list)
 
 def del_hive_db_data(host_name):
@@ -216,9 +217,9 @@ def get_row_flow():
                 operators = "电信"
                 #operators = "DX"
             else:
+                operators = "其他"
                 print("========= desc ==========")
                 print(desc)
-                continue
             ip = data.get("ip", "")
             obps = data.get("obps", "")
             ibps = data.get("ibps", "")

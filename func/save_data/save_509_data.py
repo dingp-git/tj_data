@@ -37,7 +37,7 @@ def save_hive_db_data(data):
     for j in data_list:
         j[0] = get_gloabls_var(j[0])
     data_tuple = [tuple(k) for k in data_list]
-    sql = """INSERT IGNORE INTO t_509_hive_db (db_id, data, d_time)
+    sql = """INSERT IGNORE INTO t_509_hive_db (db_id, `data`, d_time)
                 VALUES (%s,%s,%s)"""
     try:
         result = db.insertmany(sql, data_tuple)

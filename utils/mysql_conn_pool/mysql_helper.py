@@ -139,16 +139,16 @@ class MySqLHelper(object):
         :param param: 必须是元组或列表[(),()]或((),())
         :return:
         """
-        cursor, conn, count = self.db.getconn()
+        cursor, conn = self.db.getconn()
         try:
-            cursor.executemany(sql, param)
+            count = cursor.executemany(sql, param)
             conn.commit()
             return count
         except Exception as e:
             print(e)
             conn.rollback()
             self.close(cursor, conn)
-            return count
+            return
 
     # 删除
     def delete(self, sql, param=None):
@@ -160,7 +160,7 @@ class MySqLHelper(object):
             print(e)
             conn.rollback()
             self.close(cursor, conn)
-            return count
+            return
 
     # 更新
     def update(self, sql, param=None):

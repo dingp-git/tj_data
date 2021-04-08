@@ -4,6 +4,9 @@ import time
 import json
 import copy
 # Third party imports
+import traceback
+
+import requests
 from loguru import logger
 import pymysql
 # import requests
@@ -91,8 +94,8 @@ def get_hive_db_increment():
     NOW_DATE_TIME = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     # 当前时间减去2小时
     HOUR_DATE_TIME = (datetime.datetime.now()+datetime.timedelta(minutes=-120)).strftime("%Y-%m-%d %H:%M:%S")
-    db = pymysql.connect(host='10.213.70.120', port=3306, user='root', password='chanct603', 
-                        database='TIANJIN', charset='utf8')
+    db = pymysql.connect(host='10.238.249.33', port=3306, user='root', password='root',
+                        database='tianjin', charset='utf8')
     # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
     #                     charset='utf8mb4')
     cursor = db.cursor()
@@ -136,8 +139,8 @@ def get_loading_rate_increment():
     NOW_DATE_TIME = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     # 当前时间减10分钟
     MIN_DATE_TIME = (datetime.datetime.now()+datetime.timedelta(minutes=-10)).strftime("%Y-%m-%d %H:%M:%S")
-    db = pymysql.connect(host='10.213.70.120', port=3306, user='root', password='chanct603', 
-                        database='TIANJIN', charset='utf8')
+    db = pymysql.connect(host='10.238.249.33', port=3306, user='root', password='root',
+                        database='tianjin', charset='utf8mb4')
     # db = pymysql.connect(host='172.27.1.12', port=3306, user='root', password='root', database='tianjin',
     #                     charset='utf8mb4')
     cursor = db.cursor()
@@ -172,3 +175,60 @@ def get_loading_rate_increment():
     if result:
         save_509_data.save_loading_rate_increment(result)
 
+
+def get_row_flow():
+    """获取原始流量"""
+    """
+    [{"obps": 429941888.0, "discards": 0.0, "iMpps": 0.0, "ibps": 0.0, "ip": "10.148.255.7", "iUpps": 0.0, "epps": 0.0, "state": 1, 
+    "oMpps": 0.0, "timestamp": "2020-12-04 09:23:44", "speed": 10000, "port": "xgei-0/1/0/3", "oUpps": 253642.7, 
+    "desc": "To:TJ-V-QDJC-SK-SEV2-TGE1"}, ]
+    """
+    # 查询接口
+    url = "http://northstar.pub:8080/northstar/port/?net=v&ip=10.148.255.7"
+    try:
+        res = requests.get(url, timeout=30)
+        if res.status_code == 200:
+            d = res.json()
+        else:
+            print("=========== get api code err ===========")
+            print(res)
+            return
+
+    except Exception as e:
+        print("============ 请求接口异常 ============")
+        traceback.print_exc()
+    else:
+        if not d:
+            print("=========== api data is empty ===========")
+            return
+        insert_data = []  # 入库数据
+        for data in d:
+            desc = data.get("desc", "")
+            if desc == "":  # 从中获取运营商信息
+                continue
+            if "-LT-" in desc:
+                operators = "联通"
+                #operators = "LT"
+            elif "-YD-" in desc:
+                operators = "移动"
+                #operators = "YD"
+            elif "-DX-" in desc:
+                operators = "电信"
+                #operators = "DX"
+            else:
+                print("========= desc ==========")
+                print(desc)
+                continue
+            ip = data.get("ip", "")
+            obps = data.get("obps", "")
+            ibps = data.get("ibps", "")
+            timestamp = data.get("timestamp", "")
+            if timestamp == "":
+                timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+            port = data.get("port", "")
+
+            insert_data.append((ip, obps, ibps, operators, desc, port, timestamp))
+
+        # print(insert_data)
+        # 入库
+        save_509_data.save_row_flow(insert_data)

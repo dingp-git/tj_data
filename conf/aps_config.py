@@ -39,6 +39,7 @@ scheduler = BlockingScheduler(jobstores=jobstores, executors=executors, job_defa
 # scheduler.add_job(get_509_data.get_hive_db_data, args=['10.41.18.69'], id='get_hive_db_data', trigger='interval', minutes=10)
 # scheduler.add_job(get_509_data.get_hive_db_increment, id='get_hive_db_increment', trigger='interval', minutes=60)
 # scheduler.add_job(get_509_data.get_loading_rate_increment, id='get_loading_rate_increment', trigger='interval', minutes=5)
+# scheduler.add_job(get_509_data.get_row_flow, id='get_loading_rate_increment', trigger='interval', minutes=8)
 
 
 scheduler.add_job(get_603_data.get_center_data, id='get_center_data', trigger='interval', minutes=6)
@@ -54,4 +55,5 @@ scheduler.add_job(get_509_data.get_loading_rate_data, args=['10.41.18.69'] , id=
 scheduler.add_job(get_509_data.get_hive_db_data, args=['10.41.18.69'], id='get_hive_db_data', trigger='interval', minutes=8)
 scheduler.add_job(get_509_data.get_hive_db_increment, id='get_hive_db_increment', trigger='interval', minutes=6)
 scheduler.add_job(get_509_data.get_loading_rate_increment, id='get_loading_rate_increment', trigger='interval', minutes=8)
+scheduler.add_job(get_509_data.get_row_flow, id='get_loading_rate_increment', trigger='interval', minutes=8)
 

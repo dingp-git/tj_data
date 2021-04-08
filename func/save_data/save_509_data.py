@@ -79,3 +79,20 @@ def save_loading_rate_increment(data):
     except Exception as e:
         logger.error(e)
         # send_to_axxnr.send_message('save_loading_rate_increment:{}'.format(e))
+
+
+def save_row_flow(data):
+    """
+        保存原始流量
+        @params:
+            data :   保存数据(必填参数)    list
+    """
+    # return 'save_loading_rate_increment success!'
+    db = MySqLHelper()
+    sql = """INSERT IGNORE INTO t_509_row_flow(`ip_addr`, `obps`, `ibps`, `operators`, `dev_port_desc`, `dev_port`, `d_time`) VALUES(%s, %s, %s, %s, %s, %s, %s)"""
+    try:
+        result = db.insertmany(sql, data)
+        logger.debug('save_loading_rate_increment:{}'.format(result))
+    except Exception as e:
+        logger.error(e)
+        # send_to_axxnr.send_message('save_loading_rate_increment:{}'.format(e))

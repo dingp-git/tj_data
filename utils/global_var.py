@@ -63,3 +63,12 @@ def get_gloabls_var(key):
         return GLOBALS_DICT[key]
     except KeyError:
         return "Not Found"
+
+
+def del_gloabls_var(key):
+    """删除值"""
+    try:
+        GLOBALS_DICT.pop(key)
+        return True
+    except KeyError:
+        return "Not Found"

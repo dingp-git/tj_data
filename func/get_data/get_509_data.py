@@ -1,5 +1,6 @@
 # Standard library imports
 import datetime
+
 import time
 import json
 import copy
@@ -14,7 +15,10 @@ import paramiko
 # Local application imports
 from func.save_data import save_509_data
 from utils import send_to_axxnr
+from func.judge.judge import judge_data
 
+
+system_flag = '5x9'
 
 
 def get_loading_rate_data(host_name):
@@ -38,9 +42,9 @@ def get_loading_rate_data(host_name):
                     result[0]['values'][0][1]))
         ret_list.append((result[1]['metric']['device'], result[1]['metric']['instance'], temp_time2,
                     result[1]['values'][0][1]))
-        logger.debug(ret_list[0])
-        logger.debug(len(ret_list))
         save_509_data.save_loading_rate_data(ret_list)
+        for data_list in ret_list:
+            judge_data(system_flag + '加载率-' + data_list[1], data_list[3])
 
 def del_loading_rate_data(host_name):
     """
@@ -74,6 +78,7 @@ def get_hive_db_data(host_name):
         logger.debug(len(ret_list))
         logger.debug(ret_list)
         save_509_data.save_hive_db_data(ret_list)
+        
 
 def del_hive_db_data(host_name):
     """

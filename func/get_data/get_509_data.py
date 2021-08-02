@@ -134,7 +134,7 @@ def get_hive_db_increment():
     if result:
         save_509_data.save_hive_db_increment(result)
 
-
+        
 def get_loading_rate_increment():
     """获取记载率数据增量"""
     NOW_DATE_TIME = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

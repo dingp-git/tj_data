@@ -64,7 +64,7 @@ def save_match_data(data):
         result = db.insertmany(sql, data)
         logger.debug('save_match_data:{}'.format(result))
     except Exception as e:
-        logger.error(e)
+        logger.error(e) 
         # send_to_axxnr.send_message('save_match_data:{}'.format(e))
 
 def save_sms_sjjs_data(data):

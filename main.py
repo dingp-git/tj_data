@@ -28,7 +28,7 @@ from loguru import logger
 from conf.sys_config import *
 from utils import global_var
 # from utils.aps_config import scheduler
-from conf.aps_config import scheduler
+from conf.aps_config import scheduler, scheduler_init
 
 
 def init():
@@ -37,6 +37,10 @@ def init():
     if isFormalSystem:
         logger.add(LOG_CONF['LOG_FORM_PATH'] + '_{time:YYYY-MM-DD}.log', rotation='00:00',
                     retention=LOG_CONF['LOG_RETENTION'], level=LOG_CONF['LOG_LEVEL'], enqueue=True, encoding='utf8')
+        # 定时任务初始化
+        scheduler_init(isFormalSystem)
+    else:
+        scheduler_init(isFormalSystem)
     # 全局变量管理初始化
     global_var.init()
 

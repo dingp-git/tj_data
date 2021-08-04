@@ -24,12 +24,13 @@
 
 # Third party imports
 from loguru import logger
+import uvicorn
 # Local application imports
 from conf.sys_config import *
 from utils import global_var
 # from utils.aps_config import scheduler
 from conf.aps_config import scheduler, scheduler_init
-
+# from func.get_data.get_json_data import app
 
 def init():
     """初始化各种东西"""
@@ -39,8 +40,10 @@ def init():
                     retention=LOG_CONF['LOG_RETENTION'], level=LOG_CONF['LOG_LEVEL'], enqueue=True, encoding='utf8')
         # 定时任务初始化
         scheduler_init(isFormalSystem)
+        uvicorn.run("func.get_data.get_json_data:app", host="127.0.0.1", port=8000)
     else:
         scheduler_init(isFormalSystem)
+        uvicorn.run("func.get_data.get_json_data:app", host="127.0.0.1", port=8000, reload=True, workers=1, debug=True)
     # 全局变量管理初始化
     global_var.init()
 

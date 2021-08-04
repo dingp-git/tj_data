@@ -5,7 +5,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 # Local application imports
-from func.get_data import get_603_data, get_509_data, get_ipsy_data
+from func.get_data import get_603_data, get_509_data, get_ipsy_data, get_public_data
 
 
 jobstores = {
@@ -51,6 +51,8 @@ def test_init():
     scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', minutes=10)
     scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', minutes=8)
 
+    scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)
+
 def product_init():
     """生产环境"""
     # 每小时（上下浮动120秒区间内）运行'get_center_data' jitter振动参数，给每次触发添加一个随机浮动秒数,避免同时运行造成服务拥堵
@@ -71,6 +73,8 @@ def product_init():
 
     scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', minutes=10)
     scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', minutes=8)
+
+    scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)
 
 
 

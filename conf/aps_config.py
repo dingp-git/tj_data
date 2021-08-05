@@ -52,6 +52,7 @@ def test_init():
     scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', minutes=8)
 
     scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)
+    scheduler.add_job(get_public_data.get_topo_ip_list, id='get_topo_ip_list', trigger='interval', hours=24)
 
 def product_init():
     """生产环境"""
@@ -71,10 +72,11 @@ def product_init():
     scheduler.add_job(get_509_data.get_loading_rate_increment, id='get_loading_rate_increment', trigger='interval', minutes=5)
     scheduler.add_job(get_509_data.get_row_flow, id='get_row_flow', trigger='interval', minutes=8)
 
-    scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', minutes=10)
-    scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', minutes=8)
+    scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', hours=24)
+    scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', hours=24)
 
     scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)
+    scheduler.add_job(get_public_data.get_topo_ip_list, id='get_topo_ip_list', trigger='interval', hours=24)
 
 
 

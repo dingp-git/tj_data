@@ -20,30 +20,30 @@ from utils import send_to_axxnr
 
 app = FastAPI()
 
-class log_nums_item(BaseModel):
+class proxy_ip_data(BaseModel):
     proxy_ip_addr: List[str]
     storage_ip_addr: List[str]
     proxy_total: List[int]
     storage_total: List[int]
     d_time: List[datetime.datetime]
 
-class log_increment_item(BaseModel):
+class database_produce_data(BaseModel):
     db_name: List[str]
     ip_addr: List[str]
-    data_num: List[str]
+    data_num: List[int]
     d_time: List[datetime.datetime]
 
-@app.post('/tj_data/ipsy/log_nums')
-async def get_log_nums(request_data: log_nums_item):
+@app.post('/tj_data/ipsy/proxy_ip_data')
+async def get_proxy_ip_data(request_data: proxy_ip_data):
     """ 
-        接收 每家运营商上报日志条数（包括固网、移动网）数据
+        接收 代理服务器数据是否正常入库 数据
          ## **param**:
             proxy_ip_addr:      代理服务器IP(必传参数)                List[str]
             storage_ip_addr:    存储服务器IP(必传参数)                List[str]
             proxy_total:        代理服务器入库数据量(必传参数)         List[int]
             storage_total:      存储服务器入库数据量(必传参数)         List[int]
             d_time:             采集时间（每30min采集一次）(必传参数)  List[datetime]
-        ## **return**:
+        ## **return**: 数据处理结果
             [
                 (
                     "1.1.1.1",
@@ -65,18 +65,18 @@ async def get_log_nums(request_data: log_nums_item):
     if result:
         result = [tuple(j) for j in result]
         logger.debug(result)
-        save_ipsy_data.save_get_log_data(result)
+        save_ipsy_data.save_proxy_ip_data(result)
 
-@app.post('/tj_data/ipsy/log_increment')
-async def get_log_increment(request_data: log_increment_item):
+@app.post('/tj_data/ipsy/database_produce_data')
+async def get_database_produce_data(request_data: database_produce_data):
     """
-        接收 每家运营商上报日志条数的增量（包括固网、移动网） 数据
+        接收 当天库表产生情况 数据
          ## **param**:
             db_name:      数据库/表名称(必传参数)               List[str]
             ip_addr:      服务器ip(必传参数)                   List[str]
             data_num:     数据库/表数据增量(必传参数)           List[str]
             d_time:       采集时间（每30min采集一次）(必传参数)  List[datetime]
-        ## **return**:
+        ## **return**: 数据处理结果
             [
                 (
                     "dbms",
@@ -97,7 +97,7 @@ async def get_log_increment(request_data: log_increment_item):
     if result:
         result = [tuple(j) for j in result]
         logger.debug(result)
-        save_ipsy_data.save_get_log_increment(result)
+        save_ipsy_data.save_database_produce_data(result)
 
 def read_file(file_dir):
     """
@@ -105,18 +105,15 @@ def read_file(file_dir):
         @params:
             file_dir :   文件路径(必填参数)    str
     """
-    ret_list = []
     if Path(file_dir + '.ok').is_file():
         with open(Path(file_dir), 'r', encoding='utf-8') as f:
             ret = f.read()
             temp_list = ret.split(',')[0:-1]
-            result = tuple([int(item) for item in temp_list])
-            ret_list.append(result)
+            result = [tuple([int(item) for item in temp_list])]
+            logger.debug(ret_list)
+            save_ipsy_data.save_log_data(ret_list)
     else:
         return 1
-    if ret_list:
-        logger.debug(ret_list)
-        save_ipsy_data.save_log_data(ret_list)
 
 def get_log_data(file_path):
     """
@@ -134,6 +131,34 @@ def get_log_data(file_path):
             ret = read_file(f_file)
         else:
             flag = False
+
+def str_to_date(str_date):
+    """
+        将 字符串 装换成 日期
+        @params: '2021-01-01'
+        @return: 2021-01-01
+    """
+    year, month, day = [int(i) for i in str_date.split('-')]
+    d_date = datetime.date(year, month, day)
+    return d_date
+
+def get_history_log_data(start_date, end_date, file_path):
+    """
+        获取日志量历史数据
+        @params:
+            start_date:      开始日期(必填参数)   str     '2021-01-01'
+            end_date:        结束日期(必填参数)   str     '2021-03-01'
+            file_path:       文件路径(必填参数)   str     '/opt/rzx_ipsy_data'
+    """
+    ret_list = []
+    start_date = str_to_date(start_date)
+    end_date = str_to_date(end_date)
+    for i in range((end_date-start_date).days + 1):
+        day = start_date + datetime.timedelta(days=i)
+        f_day = day.strftime("%Y%m%d")
+        f_file = file_path + 'tj' + f_day + '.log'
+        read_file(f_file)
+
 
 def get_log_increment():
     """获取日志量增量"""

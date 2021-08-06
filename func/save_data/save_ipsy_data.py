@@ -10,7 +10,7 @@ from utils import send_to_axxnr
 
 def save_log_data(data):
     """
-        保存日志量数据
+        入库 日志量数据 相关数据
         @params:
             data :   保存数据(必填参数)    list
     """
@@ -27,7 +27,7 @@ def save_log_data(data):
 
 def save_log_increment(data):
     """
-        保存日志量数据增量
+        入库 日志量数据增量 相关数据
         @params:
             data :   保存数据(必填参数)    list
     """
@@ -42,35 +42,35 @@ def save_log_increment(data):
         logger.error(e)
         # send_to_axxnr.send_message('save_log_increment:{}'.format(e))
 
-def save_get_log_data(data):
+def save_proxy_ip_data(data):
     """
-        保存日志量数据
+        入库 代理服务器数据是否正常入库 相关数据
         @params:
             data :   保存数据(必填参数)    list
     """
-    # return 'save_get_log_data success!'
+    # return 'save_proxy_ip_data success!'
     db = MySqLHelper()
-    sql = """INSERT IGNORE INTO t_ipsy_get_log_nums (proxy_ip_addr, storage_ip_addr, proxy_total, storage_total, d_time )
+    sql = """INSERT IGNORE INTO t_ipsy_proxy_ip_data (proxy_ip_addr, storage_ip_addr, proxy_total, storage_total, d_time )
                 VALUES (%s,%s,%s,%s,%s)"""
     try:
         result = db.insertmany(sql, data)
         logger.debug('save_log_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        # send_to_axxnr.send_message('save_log_data:{}'.format(e))
+        # send_to_axxnr.send_message('save_proxy_ip_data:{}'.format(e))
 
-def save_get_log_increment(data):
+def save_database_produce_data(data):
     """
-        保存日志量数据增量
+        入库 当天库表产生情况 相关数据
         @params:
             data :   保存数据(必填参数)    list
     """
-    # return 'save_get_log_increment success!'
+    # return 'save_database_produce_data success!'
     db = MySqLHelper()
-    sql = """INSERT IGNORE INTO t_ipsy_get_log_increment (db_name, ip_addr, data_num, d_time) VALUES (%s,%s,%s,%s)"""
+    sql = """INSERT IGNORE INTO t_ipsy_database_produce_data (db_name, ip_addr, data_num, d_time) VALUES (%s,%s,%s,%s)"""
     try:
         result = db.insertmany(sql, data)
-        logger.debug('save_log_increment:{}'.format(result))
+        logger.debug('save_database_produce_data:{}'.format(result))
     except Exception as e:
         logger.error(e)
-        # send_to_axxnr.send_message('save_log_increment:{}'.format(e))
+        # send_to_axxnr.send_message('save_database_produce_data:{}'.format(e))

@@ -1,5 +1,5 @@
 # Standard library imports
-
+import datetime
 # Third party imports
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.jobstores.memory import MemoryJobStore
@@ -7,6 +7,7 @@ from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 # Local application imports
 from func.get_data import get_603_data, get_509_data, get_ipsy_data, get_public_data
 
+now_datetime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 jobstores = {
     'default': MemoryJobStore()     # 使用内存作为作业存储器
@@ -49,6 +50,7 @@ def test_init():
     scheduler.add_job(get_509_data.get_row_flow, id='get_row_flow', trigger='interval', minutes=8)
 
     scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', minutes=10)
+    scheduler.add_job(get_ipsy_data.get_history_log_data, id='get_history_log_data', trigger='date', run_date=now_datetime, args=['2021-01-01', '2021-03-01', '/opt/rzx_ipsy_data'])
     scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', minutes=8)
 
     scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)
@@ -73,6 +75,7 @@ def product_init():
     scheduler.add_job(get_509_data.get_row_flow, id='get_row_flow', trigger='interval', minutes=8)
 
     scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', hours=24)
+    scheduler.add_job(get_ipsy_data.get_history_log_data, id='get_history_log_data', trigger='date', run_date=now_datetime, args=['2021-01-01', '2021-03-01', '/opt/rzx_ipsy_data'])
     scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', hours=24)
 
     scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)

@@ -52,6 +52,8 @@ def test_init():
     scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', minutes=10)
     scheduler.add_job(get_ipsy_data.get_history_log_data, id='get_history_log_data', trigger='date', run_date=now_datetime, args=['2021-01-01', '2021-03-01', '/opt/rzx_ipsy_data'])
     scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', minutes=8)
+    scheduler.add_job(get_ipsy_data.get_disk_usage, id='get_disk_usage', trigger='interval', minutes=5)
+    scheduler.add_job(get_ipsy_data.get_bc_data, id='get_bc_data', trigger='interval', minutes=5)
 
     scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)
     scheduler.add_job(get_public_data.get_topo_ip_list, id='get_topo_ip_list', trigger='interval', hours=24)
@@ -77,6 +79,8 @@ def product_init():
     scheduler.add_job(get_ipsy_data.get_log_data, id='get_log_data', trigger='interval', hours=24)
     scheduler.add_job(get_ipsy_data.get_history_log_data, id='get_history_log_data', trigger='date', run_date=now_datetime, args=['2021-01-01', '2021-03-01', '/opt/rzx_ipsy_data'])
     scheduler.add_job(get_ipsy_data.get_log_increment, id='get_log_increment', trigger='interval', hours=24)
+    scheduler.add_job(get_ipsy_data.get_disk_usage, id='get_disk_usage', trigger='interval', minutes=60)
+    scheduler.add_job(get_ipsy_data.get_bc_data, id='get_bc_data', trigger='cron', month='1-12', day='1', hour=0)
 
     scheduler.add_job(get_public_data.get_topo_ip, id='get_topo_ip', trigger='interval', minutes=1)
     scheduler.add_job(get_public_data.get_topo_ip_list, id='get_topo_ip_list', trigger='interval', hours=24)

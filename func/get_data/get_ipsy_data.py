@@ -14,12 +14,16 @@ import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
+import subprocess
+import cx_Oracle as cx
 # Local application imports
 from func.save_data import save_ipsy_data
 from utils import send_to_axxnr
+from conf.ipsy_config import ip_list, get_ip_cmd,get_now_date_time
 
 app = FastAPI()
 
+# 库表  数据(接收信工所传入数据)
 class proxy_ip_data(BaseModel):
     proxy_ip_addr: List[str]
     storage_ip_addr: List[str]
@@ -99,6 +103,7 @@ async def get_database_produce_data(request_data: database_produce_data):
         logger.debug(result)
         save_ipsy_data.save_database_produce_data(result)
 
+# 日志数据 (读取本机日志文件)
 def read_file(file_dir):
     """
         通过读取文件获取 日志量数据
@@ -159,7 +164,6 @@ def get_history_log_data(start_date, end_date, file_path):
         f_file = file_path + 'tj' + f_day + '.log'
         read_file(f_file)
 
-
 def get_log_increment():
     """获取日志量增量"""
     NOW_DATE = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -206,4 +210,67 @@ def get_log_increment():
     if result:
         save_ipsy_data.save_log_increment(result)
 
-# def get_system_info():
+
+# TODO 工信通 zabbix-get
+def write_file(str2):
+    """
+        将字符串写入文件
+        @param:       str2   类型   str
+    """
+    with open('zabbix_data.txt', 'r', encoding='utf-8') as f:
+        f.write(str2)
+
+def run_cmd(command):
+    """
+        将zabbix_get执行命令后的结果写入文件
+        @param: command  zabbix_get执行命令   类型  list
+    """
+    for cmd in command:
+        ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE,encoding='utf-8',timeout=30)
+        if ret.returncode == 0:
+            if ret.stdout is None:
+                write_file('-')
+            elif ret.stdout == '':
+                write_file('0')
+            else:
+                write_file(ret.stdout.strip() + ',')
+
+def get_disk_usage():
+    """
+        获取 磁盘使用情况
+        ## **return**：数据处理结果
+    """
+    d_time = get_now_date_time()
+    for ip in ip_list:
+        write_file(ip + ',')
+        cmd_list = get_ip_cmd(ip)
+        run_cmd(cmd_list)
+        write_file(str(d_time))
+        write_file('\n')
+    get_disk_data()
+
+def get_disk_data():
+    with open('zabbix_data.txt', 'r', encoding='utf-8') as f:
+        rows = f.readlines()
+        ret_data = [row.strip() for row in rows]
+        result = []
+        for i in ret_data:
+            temp_list = i.split(',')
+            result.append(tuple(temp_list))
+        if result:
+            save_ipsy_data.save_disk_usage(result)
+
+
+# TODO 拨测数据 oracle
+def get_bc_data():
+    conn = cx.connect('tjca', 'tjca123456', '10.238.183.2/jk1')
+    cursor = conn.cursor()
+    ret = cursor.execute('select * from tryfzx.tjca limit 100')
+    data = ret.fetchall()
+    with open('oracle_data.txt', 'a',encoding='utf-8') as f:
+        f.write(data)
+    cursor.close()
+    conn.close()
+    # if data:
+    #     save_ipsy_data.save_bc_data(data)
+

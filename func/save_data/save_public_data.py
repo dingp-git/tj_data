@@ -14,9 +14,12 @@ def save_topo_data(data):
             data :   保存数据(必填参数)    list
     """
     db = MySqLHelper()
-    sql = """INSERT IGNORE INTO t_public_topo (ip, config, crcity, crlacpoint, crprovince_name, 
-        dfcoding, dmodel_name, dname, dstatus_name, maindept_name, mperson_name, rname) 
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    sql = """REPLACE INTO t_public_topo (ip, config, crcity, crlacpoint, crprovince_name, 
+        dfcoding, dmodel_name, dname, dstatus_name, maindept_name, mperson_name, rname, d_time) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    # sql = """INSERT IGNORE INTO t_public_topo (ip, config, crcity, crlacpoint, crprovince_name, 
+    #     dfcoding, dmodel_name, dname, dstatus_name, maindept_name, mperson_name, rname) 
+    #     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
     try:
         result = db.insertmany(sql, data)
         logger.debug('save_topo_data: {}'.format(result))

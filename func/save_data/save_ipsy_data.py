@@ -74,3 +74,40 @@ def save_database_produce_data(data):
     except Exception as e:
         logger.error(e)
         # send_to_axxnr.send_message('save_database_produce_data:{}'.format(e))
+
+
+def save_disk_usage(data):
+    """
+        入库 磁盘使用情况和关键程序监测 相关数据
+        @params:
+            data :   保存数据(必填参数)    list
+    """
+    db = MySqLHelper()
+    sql = """INSERT IGNORE INTO t_ipsy_used_disk (ip, usedDisk, usedDisk_data1, usedDisk_data2, usedDisk_data3,
+            usedDisk_data4, usedDisk_data5, usedDisk_data6, usedDisk_data7, usedDisk_data8, usedDisk_data9,
+            usedDisk_data10, usedDisk_data11, usedDisk_data12, check_df, check_jps, check_recv, d_time) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    try:
+        result = db.insertmany(sql, data)
+        logger.debug('save_disk_usage:{}'.format(result))
+    except Exception as e:
+        logger.error(e)
+        # send_to_axxnr.send_message('save_disk_usage:{}'.format(e))
+
+def save_bc_data(data):
+    """
+        入库 拨测 相关数据
+        @params:
+            data :   保存数据(必填参数)    list
+    """
+    db = MySqLHelper()
+    sql = """INSERT IGNORE INTO t_ipsy_bc (province, isp, online_report_rate, offline_report_rate, access_report_rate,
+            log_standard_rate, log_loading_rate, log_query_rate, extranet_report_rate, ip_report_rate, ip_accurate_rate,
+            imei_correct_rate, imsi_correct_rate, lac_correct_rate, ci_correct_rate, total_nums, d_time) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    try:
+        result = db.insertmany(sql, data)
+        logger.debug('save_bc_data:{}'.format(result))
+    except Exception as e:
+        logger.error(e)
+        # send_to_axxnr.send_message('save_bc_data:{}'.format(e))
